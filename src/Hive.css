@@ -1,0 +1,99 @@
+/* hive.css */
+
+/* Container for the entire search section */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+/* Style for the search bar */
+.search-bar {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 10px;
+}
+
+.search-bar button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.search-bar button:hover {
+  background-color: #45a049;
+}
+
+/* Style for the clear button */
+.clear-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.clear-button:hover {
+  background-color: #e53935;
+}
+
+/* Container for search results */
+.results-container {
+  width: 600px;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+/* Style for individual result items */
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item span {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.result-item button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.result-item button:hover {
+  background-color: #1976D2;
+}
+
+.pie-chart-container {
+    width: 200px;
+    height: 200px;
+    margin-top: 20px;
+}
