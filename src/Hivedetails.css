@@ -1,34 +1,129 @@
 .hive-details-container {
     padding: 20px;
-    background-color: #f7f7f7;
+    background-color: #fffbe6; 
     text-align: center;
+    font-family: 'Arial', sans-serif; 
 }
+
 
 .hive-details-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
     margin-top: 20px;
 }
 
+
 .hive-card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95); 
+    border: 2px solid #ffcc00; 
+    border-radius: 16px;
     padding: 20px;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
     text-align: left;
+    color: #333;
+    font-size: 1rem; 
 }
 
+
 .hive-card h2 {
-    font-size: 1.5rem;
+    font-size: 1.5rem; 
+    color: #f0b400;
     margin-bottom: 10px;
 }
 
 .hive-card p {
-    margin: 5px 0;
-    font-size: 1rem;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 8px;
+    background: #fff9c4; 
+    font-size: 0.9rem; 
+    font-weight: 500;
 }
+
 
 .hive-card strong {
     color: #333;
+    font-weight: 700;
+}
+
+
+.hive-card .icon {
+    margin-right: 8px;
+    font-size: 1.2rem; 
+    color: #f0b400; 
+}
+
+
+.honey-bar {
+    position: relative;
+    width: 140px; 
+    height: 140px;
+    margin: 20px auto;
+    border-radius: 50%;
+    background: conic-gradient(#ffcc00 85%, #eee 0%); 
+}
+
+.honey-bar-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+}
+
+
+.hive-card .expected-harvest {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #fff9c4; 
+    text-align: center;
+    font-size: 1.1rem; 
+    font-weight: bold;
+}
+
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #f0b400;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-size: 1.4rem; 
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #db9e00; 
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+    .hive-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hive-card {
+        padding: 15px;
+    }
+
+    .honey-bar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .honey-bar-text {
+        font-size: 1rem;
+    }
 }

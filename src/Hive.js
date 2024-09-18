@@ -5,9 +5,9 @@ import './Hivedetails.css';
 import HivePieChart from './HivePieChart';
 
 const Hive = () => {
-    const [hive, setHive] = useState(null); // Store a single hive's data
+    const [hive, setHive] = useState(null); 
     const [hiveNo, setHiveNo] = useState('');
-    const [searched, setSearched] = useState(false); // To track if a search has been performed
+    const [searched, setSearched] = useState(false); 
 
     const fetchHiveDetails = () => {
         let url = `http://localhost:5000/hive-details?hiveNo=${hiveNo}`;
@@ -15,12 +15,14 @@ const Hive = () => {
         axios.get(url)
             .then(response => {
                 if (response.data.success) {
-                    setHive(response.data.data[hiveNo]); // Set the first matching hive
+                    setHive(response.data.data); 
                 } else {
+                    setHive(null); 
                     console.error('Failed to fetch hive details');
                 }
             })
             .catch(error => {
+                setHive(null); 
                 console.error('Error fetching hive details', error);
             });
     };

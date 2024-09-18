@@ -1,6 +1,4 @@
-/* hive.css */
 
-/* Container for the entire search section */
 .search-container {
   display: flex;
   flex-direction: column;
@@ -8,7 +6,7 @@
   margin: 20px;
 }
 
-/* Style for the search bar */
+
 .search-bar {
   width: 100%;
   max-width: 600px;
@@ -40,7 +38,7 @@
   background-color: #45a049;
 }
 
-/* Style for the clear button */
+
 .clear-button {
   background-color: #f44336;
   color: white;
@@ -55,14 +53,14 @@
   background-color: #e53935;
 }
 
-/* Container for search results */
+
 .results-container {
   width: 600px;
   max-width: 600px;
   margin-top: 20px;
 }
 
-/* Style for individual result items */
+
 .result-item {
   display: flex;
   justify-content: space-between;

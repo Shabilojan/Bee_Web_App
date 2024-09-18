@@ -12,7 +12,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root', // Update with your MySQL username
     password: '', // Update with your MySQL password
-    database: 'login_db', // Updated to use your existing database
+    database: 'login_db', // Your existing database name
 });
 
 db.connect((err) => {
@@ -23,39 +23,73 @@ db.connect((err) => {
     console.log('Connected to database');
 });
 
-// Endpoint to get hive details
-app.get('/hives-details', (req, res) => {
-    const query = 'SELECT * FROM hives';
-
-    db.query(query, (err, results) => {
+// Login endpoint
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+    
+    db.query(query, [username, password], (err, results) => {
         if (err) {
+            console.error('Error executing query:', err);
             res.status(500).send({ success: false, message: 'Database error' });
             return;
         }
-
-        res.send({ success: true, data: results });
+        
+        if (results.length > 0) {
+            res.send({ success: true, message: 'Login successful' });
+        } else {
+            res.send({ success: false, message: 'Invalid credentials' });
+        }
     });
 });
 
-app.listen(5000, () => {
-    console.log('Server is running on port 5000');
-});
-
-// Endpoint to get hive details by hive number
+// Hive details for all hives
 app.get('/hive-details', (req, res) => {
     const hiveNo = req.query.hiveNo;
-
-    let query = 'SELECT * FROM hives';
-    if (hiveNo) {
-        query += ` WHERE hiveNo = ${db.escape(hiveNo)}`;
+    if (!hiveNo) {
+        return res.status(400).json({ success: false, message: 'hiveNo parameter is required' });
     }
 
-    db.query(query, (err, results) => {
+    const query = 'SELECT * FROM hives WHERE hiveNo = ?';
+    db.query(query, [hiveNo], (err, results) => {
         if (err) {
             res.status(500).send({ success: false, message: 'Database error' });
             return;
         }
 
-        res.send({ success: true, data: results });
+        if (results.length > 0) {
+            res.send({ success: true, data: results[0] }); // Return the first result
+        } else {
+            res.send({ success: false, message: `No hive details found for hive number ${hiveNo}` });
+        }
     });
+});
+
+// Hive details for a specific hive by hiveNo
+app.get('/hive-details', (req, res) => {
+    const hiveNo = req.query.hiveNo;
+    if (!hiveNo) {
+        return res.status(400).json({ success: false, message: 'hiveNo parameter is required' });
+    }
+
+    const query = 'SELECT * FROM hives WHERE hiveNo = ?';
+    db.query(query, [hiveNo], (err, results) => {
+        if (err) {
+            res.status(500).send({ success: false, message: 'Database error' });
+            return;
+        }
+
+        if (results.length > 0) {
+            res.send({ success: true, data: results[0] }); // Return the first result
+        } else {
+            res.send({ success: false, message: `No hive details found for hive number ${hiveNo}` });
+        }
+    });
+});
+
+
+// Start server on port 5000
+const PORT = 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

@@ -26,6 +26,7 @@ const Login = () => {
     return (
         <div className="login-container">
             <div className="login-box">
+            
                 <h2>Welcome</h2>
                 <form onSubmit={handleLogin}>
                     <div className="input-container">
@@ -53,8 +54,11 @@ const Login = () => {
                                 Remember
                             </label>
                             <a href="/">Forgot Password?</a>
+                            <a href="/">Create account</a>
                         </div>
                         <button type="submit">Submit</button>
+                        
+                        
                     </div>
                 </form>
                 {message && <p>{message}</p>}
