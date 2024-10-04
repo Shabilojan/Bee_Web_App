@@ -87,7 +87,51 @@ app.get('/hive-details', (req, res) => {
     });
 });
 
+// Update hive details
+app.put('/hivedetails/:hiveNo', (req, res) => {
+    const hiveNo = req.params.hiveNo;
+    const updatedHiveData = req.body; // The updated data from the frontend
 
+    const query = 'UPDATE hives SET ? WHERE hiveNo = ?';
+    db.query(query, [updatedHiveData, hiveNo], (err) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database error' });
+        }
+        res.status(200).json({ success: true, message: `Hive #${hiveNo} updated successfully.` });
+    });
+});
+
+// Delete hive
+app.delete('/hivedetails/:hiveNo', (req, res) => {
+    const hiveNo = req.params.hiveNo;
+
+    const query = 'DELETE FROM hives WHERE hiveNo = ?';
+    db.query(query, [hiveNo], (err) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Database error' });
+        }
+        res.status(200).json({ success: true, message: `Hive #${hiveNo} deleted successfully.` });
+    });
+});
+
+// POST route to create a new hive
+app.post('/hive-details', (req, res) => {
+    const { hiveNo, humidity, temperature, beeInOut, raindrops, expectedHarvestDate } = req.body;
+
+    const query = `INSERT INTO hives (hiveNo, humidity, temperature, beeInOut, raindrops, ExpectedHarvestDate) 
+                   VALUES (?, ?, ?, ?, ?, ?)`;
+    const values = [hiveNo, humidity, temperature, beeInOut, raindrops, expectedHarvestDate];
+
+    db.query(query, values, (error, results) => {
+        if (error) {
+            console.error('Error creating hive:', error);
+            res.status(500).json({ success: false, message: 'Failed to create hive' });
+        } else {
+            res.status(200).json({ success: true, message: `Hive #${hiveNo} created successfully!` });
+        }
+    });
+});
+s
 // Start server on port 5000
 const PORT = 5000;
 app.listen(PORT, () => {

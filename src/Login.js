@@ -64,7 +64,7 @@ const Login = () => {
                 {message && <p>{message}</p>}
             </div>
             <div className="login-image">
-                <img src={require('./logo2.png')} alt="Login Illustration" />
+                <img src={require('./Logo.png')} alt="Login Illustration" />
             </div>
         </div>
     );

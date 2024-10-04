@@ -8,7 +8,7 @@ const Hivedetails = () => {
 
     useEffect(() => {
     
-        axios.get('http://localhost:5000/hives-details')
+        axios.get('http://localhost:5000/hive-details')
             .then(response => {
                 if (response.data.success) {
                     setHives(response.data.data); 
