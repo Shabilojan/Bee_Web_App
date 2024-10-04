@@ -1,0 +1,57 @@
+.user-details-container {
+    padding: 20px;
+    background-color: #f8f9fa; /* Light background for the container */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    max-width: 600px; /* Max width for the container */
+    margin: auto; /* Center the container */
+}
+
+.search-bar {
+    display: flex; /* Flexbox for search inputs */
+    justify-content: space-between; /* Space out the inputs */
+    margin-bottom: 20px; /* Margin below the search bar */
+}
+
+input[type="number"],
+input[type="text"],
+input[type="email"] {
+    padding: 10px; /* Padding inside input fields */
+    border: 1px solid #ced4da; /* Border for input fields */
+    border-radius: 4px; /* Rounded corners */
+    flex-grow: 1; /* Allow inputs to grow */
+    margin-right: 10px; /* Space between inputs */
+}
+
+button {
+    padding: 10px 15px; /* Padding for buttons */
+    background-color: #007bff; /* Primary button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.user-card {
+    border: 1px solid #ced4da; /* Border for user card */
+    padding: 15px; /* Padding inside user card */
+    margin-top: 15px; /* Margin above user card */
+    background-color: #ffffff; /* White background for user card */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.user-card img {
+    border-radius: 50%; /* Circular profile picture */
+    margin-top: 10px; /* Margin above the image */
+}
+
+label {
+    display: block; /* Block layout for labels */
+    margin-top: 10px; /* Margin above labels */
+    margin-bottom: 5px; /* Margin below labels */
+    font-weight: bold; /* Bold text for labels */
+}

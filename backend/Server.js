@@ -131,7 +131,94 @@ app.post('/hive-details', (req, res) => {
         }
     });
 });
-s
+
+//------------------user management----------------
+// Create user
+app.post('/user-details', (req, res) => {
+    const { name, email, phoneNumber, profilePicture } = req.body;
+    const newUser = { name, email, phoneNumber, profilePicture };
+    const query = 'INSERT INTO users SET ?';
+
+    db.query(query, newUser, (err, result) => {
+        if (err) {
+            res.status(500).json({ success: false, message: 'Database error' });
+            return;
+        }
+        res.json({ success: true, message: 'User created', userId: result.insertId });
+    });
+});
+
+// Update user
+app.put('/user-details/:id', (req, res) => {
+    const userId = req.params.id;
+    const { name, email, phoneNumber, profilePicture } = req.body;
+
+    const query = 'UPDATE users SET name = ?, email = ?, phoneNumber = ?, profilePicture = ? WHERE id = ?';
+    db.query(query, [name, email, phoneNumber, profilePicture, userId], (err, result) => {
+        if (err) {
+            res.status(500).json({ success: false, message: 'Database error' });
+            return;
+        }
+        res.json({ success: true, message: 'User updated' });
+    });
+});
+
+// Delete user
+app.delete('/user-details/:id', (req, res) => {
+    const userId = req.params.id;
+    const query = 'DELETE FROM users WHERE id = ?';
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            res.status(500).json({ success: false, message: 'Database error' });
+            return;
+        }
+        res.json({ success: true, message: 'User deleted' });
+    });
+});
+
+// Get user by ID
+app.get('/user-details/:id', (req, res) => {
+    const userId = req.params.id;
+    const query = 'SELECT * FROM users WHERE id = ?';
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            res.status(500).json({ success: false, message: 'Database error' });
+            return;
+        }
+        if (result.length > 0) {
+            res.json({ success: true, data: result[0] });
+        } else {
+            res.json({ success: false, message: 'User not found' });
+        }
+    });
+});
+
+// Get all users
+app.get('/user-details/:id', (req, res) => {
+    const userId = req.params.id; // User ID from URL
+
+    // Validate that userId is a number (assuming ID is numeric)
+    if (isNaN(userId)) {
+        return res.status(400).send({ success: false, message: 'Invalid user ID format' });
+    }
+
+    const query = 'SELECT * FROM users WHERE id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Database error:', err); // Log the error for debugging
+            return res.status(500).send({ success: false, message: 'Database error' });
+        }
+
+        if (results.length > 0) {
+            return res.send({ success: true, data: results[0] });  // Return the first result
+        } else {
+            return res.send({ success: false, message: `No user found with id ${userId}` });
+        }
+    });
+});
+
 // Start server on port 5000
 const PORT = 5000;
 app.listen(PORT, () => {
