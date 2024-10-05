@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import Sidebar from './Sidebar'; // Sidebar component
+import Sidebar from '../Sidebar/Sidebar'; // Sidebar component
 import './Dashboard.css'; // Importing styles
 
 const AdminDashboard = () => {
@@ -13,7 +13,7 @@ const AdminDashboard = () => {
                 <header className="header">
                     <h2>Admin Dashboard</h2>
                     <div className="profile">
-                        <img src="./logo.png" alt="Admin" className="profile-pic" />
+                        <img src="./image.png" alt="Admin" className="profile-pic" />
                         <span className="admin-name">Admin</span>
                     </div>
                 </header>
@@ -32,12 +32,12 @@ const AdminDashboard = () => {
                 <div className="card-container">
                     <div className="card">
                         <h3>User Management</h3>
-                        <button onClick={() => navigate('/user-management')}>Manage Users</button>
+                        <button onClick={() => navigate('/user')}>Manage Users</button>
                     </div>
 
                     <div className="card">
                         <h3>Hive Management</h3>
-                        <button onClick={() => navigate('/hive-management')}>Manage Hives</button>
+                        <button onClick={() => navigate('/hive')}>Manage Hives</button>
                     </div>
                 </div>
             </div>

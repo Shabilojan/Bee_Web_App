@@ -36,12 +36,14 @@ app.post('/login', (req, res) => {
         }
         
         if (results.length > 0) {
-            res.send({ success: true, message: 'Login successful' });
+            const user = results[0]; // Assuming the first result is the correct user
+            res.send({ success: true, role: user.role, message: 'Login successful' });
         } else {
             res.send({ success: false, message: 'Invalid credentials' });
         }
     });
 });
+
 
 // Hive details for all hives
 app.get('/hive-details', (req, res) => {

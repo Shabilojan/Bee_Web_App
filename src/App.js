@@ -1,14 +1,21 @@
 import React from 'react';
-import User from './User/User';
-import Hive from './Hive/Hive';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AdminDashboard from './Admin/AdminDashboard'; // Admin Dashboard
+import User from './User/User'; // User Dashboard
+import Login from './Login/Login'; // Login Page
+import Hive from './Hive/Hive'; // Hive component
 
-function App() {
-  return (
-    <div className="App">
-      <User/>
-
-    </div>
-  );
-}
+const App = () => {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/Admin" element={<AdminDashboard />} />
+                <Route path="/user" element={<User />} />
+                <Route path="/Hive" element={<Hive />} />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;
