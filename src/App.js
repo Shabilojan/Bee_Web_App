@@ -4,6 +4,7 @@ import AdminDashboard from './Admin/AdminDashboard';
 import User from './User/User';
 import Login from './Login/Login';
 import Hive from './Hive/Hive';
+import Hivedetails from './Hive/Hivedetails'
 import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute component
 
 const App = () => {
@@ -39,6 +40,16 @@ const App = () => {
                     element={
                         <ProtectedRoute>
                             <Hive />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Protected route for Hive - accessible to all authenticated users */}
+                <Route
+                    path="/Hive-details"
+                    element={
+                        <ProtectedRoute>
+                            <Hivedetails/>
                         </ProtectedRoute>
                     }
                 />

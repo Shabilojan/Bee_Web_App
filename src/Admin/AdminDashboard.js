@@ -41,7 +41,7 @@ const AdminDashboard = () => {
                     </div>
                     <div className="card">
                         <h3>Hive Management</h3>
-                        <button onClick={() => navigate('/hive')}>Manage Hives</button>
+                        <button onClick={() => navigate('/hive-details')}>Manage Hives</button>
                     </div>
                 </div>
             </div>
