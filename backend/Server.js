@@ -7,6 +7,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+// Secret for JWT
+const JWT_SECRET = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'; // Replace with a secure secret in production
+
+
 // MySQL connection
 const db = mysql.createConnection({
     host: 'localhost',
@@ -24,25 +31,122 @@ db.connect((err) => {
 });
 
 // Login endpoint
+// app.post('/login', (req, res) => {
+//     const { username, password } = req.body;
+//     const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+    
+//     db.query(query, [username, password], (err, results) => {
+//         if (err) {
+//             console.error('Error executing query:', err);
+//             res.status(500).send({ success: false, message: 'Database error' });
+//             return;
+//         }
+        
+//         if (results.length > 0) {
+//             const user = results[0]; // Assuming the first result is the correct user
+//             res.send({ success: true, role: user.role, message: 'Login successful' });
+//         } else {
+//             res.send({ success: false, message: 'Invalid credentials' });
+//         }
+//     });
+// });
+
+
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    
-    db.query(query, [username, password], (err, results) => {
+    const query = 'SELECT * FROM users WHERE username = ?';
+
+    db.query(query, [username], async (err, results) => {
         if (err) {
             console.error('Error executing query:', err);
-            res.status(500).send({ success: false, message: 'Database error' });
-            return;
+            return res.status(500).send({ success: false, message: 'Database error' });
         }
-        
+
+        console.log(results)
+
         if (results.length > 0) {
-            const user = results[0]; // Assuming the first result is the correct user
-            res.send({ success: true, role: user.role, message: 'Login successful' });
+            const user = results[0]; // Get the first result
+
+            // Compare the hashed password with the provided password
+            const match = await bcrypt.compare(password, user.password);
+            if (match) {
+                // Passwords match, create a JWT token
+                const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+
+                // Send the token and user role in the response
+                return res.send({ success: true, token, role: user.role, message: 'Login successful' });
+            } else {
+                return res.send({ success: false, message: 'Invalid credentials' });
+            }
         } else {
-            res.send({ success: false, message: 'Invalid credentials' });
+            return res.send({ success: false, message: 'Invalid credentials' });
         }
     });
 });
+
+
+app.post('/user-details', async (req, res) => {
+    const { name, email, phoneNumber, password, profilePicture,role , username} = req.body;
+
+    // Basic validatio
+    if (!name || !email || !phoneNumber || !password) {
+        return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    try {
+        // Check if the user already exists
+        const checkUserQuery = 'SELECT * FROM users WHERE email = ?';
+        db.query(checkUserQuery, [email], async (err, results) => {
+            if (err) {
+                console.error('Error checking user:', err);
+                return res.status(500).json({ success: false, message: 'Database error' });
+            }
+
+            if (results.length > 0) {
+                return res.status(400).json({ success: false, message: 'User already exists' });
+            }
+
+            // Hash the password before saving
+            const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+            console.log(hashedPassword)
+
+            const newUser = {
+                name,
+                email,
+                phoneNumber,
+                password: hashedPassword, // Save hashed password
+                profilePicture,
+                username,
+                role // This can be a file path or URL
+            };
+
+            // Insert user into the database
+            const insertUserQuery = 'INSERT INTO users SET ?';
+            db.query(insertUserQuery, newUser, (err, result) => {
+                if (err) {
+                    console.error('Error inserting user:', err);
+                    return res.status(500).json({ success: false, message: 'Database error' });
+                }
+
+                // Generate JWT token
+                const token = jwt.sign({ id: result.insertId, name, email }, JWT_SECRET, {
+                    expiresIn: '1h', // Token valid for 1 hour
+                });
+
+                res.json({
+                    success: true,
+                    message: 'User created successfully',
+                    userId: result.insertId,
+                    token, // Send the token to the client
+                });
+            });
+        });
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.status(500).json({ success: false, message: 'Something went wrong, please try again later' });
+    }
+});
+
 
 
 // Hive details for all hives
@@ -136,19 +240,22 @@ app.post('/hive-details', (req, res) => {
 
 //------------------user management----------------
 // Create user
-app.post('/user-details', (req, res) => {
-    const { name, email, phoneNumber, profilePicture } = req.body;
-    const newUser = { name, email, phoneNumber, profilePicture };
-    const query = 'INSERT INTO users SET ?';
+// app.post('/user-details', (req, res) => {
+//     const { name, email, phoneNumber, profilePicture } = req.body;
+//     const newUser = { name, email, phoneNumber, profilePicture };
+//     const query = 'INSERT INTO users SET ?';
 
-    db.query(query, newUser, (err, result) => {
-        if (err) {
-            res.status(500).json({ success: false, message: 'Database error' });
-            return;
-        }
-        res.json({ success: true, message: 'User created', userId: result.insertId });
-    });
-});
+//     db.query(query, newUser, (err, result) => {
+//         if (err) {
+//             res.status(500).json({ success: false, message: 'Database error' });
+//             return;
+//         }
+//         res.json({ success: true, message: 'User created', userId: result.insertId });
+//     });
+// });
+
+
+
 
 // Update user
 app.put('/user-details/:id', (req, res) => {

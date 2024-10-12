@@ -9,24 +9,56 @@ const Login = () => {
     const [message, setMessage] = useState('');
     const navigate = useNavigate(); // For navigation
 
+    // const handleLogin = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await axios.post('http://localhost:5000/login', { username, password });
+
+    //         console.log(response.data); // Log the response for debugging
+
+    //         if (response.data.success) {
+    //             const userRole = response.data.role; // Assuming the role is returned in response
+    //             setMessage('Login successful!');
+
+    //             // Redirect based on role
+    //             if (userRole === 'Admin') {
+    //                 navigate('/Admin'); // Correctly navigate to AdminDashboard
+    //             } else if (userRole === 'user') {
+    //                 navigate('/user'); // Navigate to User Dashboard
+    //             } else {
+    //                 setMessage('You are not authorized to access the Admin Dashboard.');
+    //             }
+    //         } else {
+    //             setMessage('Invalid credentials, please try again.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error during login', error);
+    //         setMessage('Something went wrong. Please try again later.');
+    //     }
+    // };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:5000/login', { username, password });
-
+    
             console.log(response.data); // Log the response for debugging
-
+    
             if (response.data.success) {
-                const userRole = response.data.role; // Assuming the role is returned in response
+                const userRole = response.data.role; // Role returned from the backend (Admin or user)
+                const token = response.data.token; // JWT token
+    
+                // Store the JWT token and user role in localStorage
+                localStorage.setItem('token', token);
+                localStorage.setItem('role', userRole);
+    
                 setMessage('Login successful!');
-
-                // Redirect based on role
+    
+                // Redirect based on the user's role
                 if (userRole === 'Admin') {
-                    navigate('/Admin'); // Correctly navigate to AdminDashboard
+                    navigate('/Admin'); // Navigate to AdminDashboard
                 } else if (userRole === 'user') {
                     navigate('/user'); // Navigate to User Dashboard
-                } else {
-                    setMessage('You are not authorized to access the Admin Dashboard.');
                 }
             } else {
                 setMessage('Invalid credentials, please try again.');
@@ -36,6 +68,9 @@ const Login = () => {
             setMessage('Something went wrong. Please try again later.');
         }
     };
+    
+    
+
 
     return (
         <div className="login-container">
