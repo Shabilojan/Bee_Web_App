@@ -30,6 +30,8 @@ db.connect((err) => {
     console.log('Connected to database');
 });
 
+
+
 // Login endpoint
 // app.post('/login', (req, res) => {
 //     const { username, password } = req.body;
@@ -150,27 +152,39 @@ app.post('/user-details', async (req, res) => {
 
 
 
-// Hive details for a specific hive by hiveNo
+// // Hive details for specific or all hives
 app.get('/hive-details', (req, res) => {
     const hiveNo = req.query.hiveNo;
-    if (!hiveNo) {
-        return res.status(400).json({ success: false, message: 'hiveNo parameter is required' });
+
+    let query;
+    let queryParams = [];
+
+    // If hiveNo is provided, fetch details for that specific hive
+    if (hiveNo) {
+        query = 'SELECT * FROM hives WHERE hiveNo = ?';
+        queryParams = [hiveNo];
+    } else {
+        // If no hiveNo is provided, fetch details for all hives
+        query = 'SELECT * FROM hives';
     }
 
-    const query = 'SELECT * FROM hives WHERE hiveNo = ?';
-    db.query(query, [hiveNo], (err, results) => {
+    db.query(query, queryParams, (err, results) => {
         if (err) {
+            console.error('Database error:', err);
             res.status(500).send({ success: false, message: 'Database error' });
             return;
         }
 
         if (results.length > 0) {
-            res.send({ success: true, data: results[0] }); // Return the first result
+            // Return results based on whether a specific hive was queried
+            res.send({ success: true, data: hiveNo ? results[0] : results });
         } else {
-            res.send({ success: false, message: `No hive details found for hive number ${hiveNo}` });
+            res.send({ success: false, message: hiveNo ? `No hive details found for hive number ${hiveNo}` : 'No hive details found' });
         }
     });
 });
+
+
 
 // Update hive details
 app.put('/hivedetails/:hiveNo', (req, res) => {
