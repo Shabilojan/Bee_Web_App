@@ -149,36 +149,6 @@ app.post('/user-details', async (req, res) => {
 
 
 
-// Hive details for specific or all hives
-app.get('/hive-details', (req, res) => {
-    const hiveNo = req.query.hiveNo;
-
-    let query;
-    let queryParams = [];
-
-    // If hiveNo is provided, fetch details for that specific hive
-    if (hiveNo) {
-        query = 'SELECT * FROM hives WHERE hiveNo = ?';
-        queryParams = [hiveNo];
-    } else {
-        // If no hiveNo is provided, fetch details for all hives
-        query = 'SELECT * FROM hives';
-    }
-
-    db.query(query, queryParams, (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            res.status(500).send({ success: false, message: 'Database error' });
-            return;
-        }
-
-        if (results.length > 0) {
-            res.send({ success: true, data: results });
-        } else {
-            res.send({ success: false, message: hiveNo ? `No hive details found for hive number ${hiveNo}` : 'No hive details found' });
-        }
-    });
-});
 
 // Hive details for a specific hive by hiveNo
 app.get('/hive-details', (req, res) => {
