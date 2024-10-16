@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
@@ -9,6 +9,19 @@ const Login = () => {
     const [message, setMessage] = useState('');
     const navigate = useNavigate(); // For navigation
 
+    // Check if user is already logged in
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Redirect to the appropriate dashboard if the user is already logged in
+            const role = localStorage.getItem('role');
+            if (role === 'Admin') {
+                navigate('/Admin'); // Navigate to Admin Dashboard
+            } else if (role === 'user') {
+                navigate('/user'); // Navigate to User Dashboard
+            }
+        }
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -27,7 +40,7 @@ const Login = () => {
     
                 setMessage('Login successful!');
     
-                // Redirect based on the user's role
+                // Clear browser history and redirect based on the user's role
                 if (userRole === 'Admin') {
                     navigate('/Admin'); // Navigate to AdminDashboard
                 } else if (userRole === 'user') {
@@ -41,9 +54,12 @@ const Login = () => {
             setMessage('Something went wrong. Please try again later.');
         }
     };
-    
-    
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        navigate('/login'); // Redirect to the login page
+    };
 
     return (
         <div className="login-container">
@@ -75,7 +91,6 @@ const Login = () => {
                                 Remember
                             </label>
                             <a href="/">Forgot Password?</a>
-                           
                         </div>
                         <button type="submit">Submit</button>
                     </div>
@@ -85,6 +100,7 @@ const Login = () => {
             <div className="login-image">
                 <img src={require('./Logo.png')} alt="Login Illustration" />
             </div>
+           
         </div>
     );
 };

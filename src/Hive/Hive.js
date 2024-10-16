@@ -22,6 +22,9 @@ const Hive = () => {
         honeyLevel: '',
     });
 
+    // Check user role from local storage
+    const userRole = localStorage.getItem('role'); // Fetch the role from localStorage
+
     // Fetch hive details
     const fetchHiveDetails = () => {
         axios.get(`http://localhost:5000/hive-details?hiveNo=${hiveNo}`)
@@ -146,9 +149,11 @@ const Hive = () => {
                 />
                 <button onClick={handleSearch}>Search</button>
                 <button onClick={handleClear} style={{ marginLeft: '10px' }}>Clear</button>
-                <button onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>
-                    {isCreating ? 'Cancel' : 'Create Hive'}
-                </button>
+                {userRole === 'Admin' && (
+                    <button onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>
+                        {isCreating ? 'Cancel' : 'Create Hive'}
+                    </button>
+                )}
             </div>
 
             {message && <p>{message}</p>}
@@ -164,8 +169,12 @@ const Hive = () => {
                     <p><strong>Honey Level:</strong> {hive.honeyLevel}</p>
                     <HivePieChart honeyLevel={hive.honeyLevel} />
 
-                    <button onClick={handleDelete} style={{ marginTop: '10px' }}>Delete Hive</button>
-                    <button onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Edit Hive</button>
+                    {userRole === 'Admin' && (
+                        <>
+                            <button onClick={handleDelete} style={{ marginTop: '10px' }}>Delete Hive</button>
+                            <button onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Edit Hive</button>
+                        </>
+                    )}
                 </div>
             )}
 
@@ -234,7 +243,7 @@ const Hive = () => {
                 </div>
             )}
 
-            {isCreating && (
+            {isCreating && userRole === 'Admin' && (
                 <div className="hive-card">
                     <h2>Create New Hive</h2>
                     <form>
@@ -310,6 +319,7 @@ const Hive = () => {
                         </div>
 
                         <button type="button" onClick={handleCreate} style={{ marginTop: '10px' }}>Create Hive</button>
+                        <button type="button" onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>Cancel</button>
                     </form>
                 </div>
             )}
