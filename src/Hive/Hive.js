@@ -9,9 +9,9 @@ const Hive = () => {
     const [hiveNo, setHiveNo] = useState('');
     const [searched, setSearched] = useState(false);
     const [message, setMessage] = useState('');
-    const [isEditing, setIsEditing] = useState(false); 
+    const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({});
-    const [isCreating, setIsCreating] = useState(false); // New state for create mode
+    const [isCreating, setIsCreating] = useState(false);
     const [newHive, setNewHive] = useState({
         hiveNo: '',
         humidity: '',
@@ -19,30 +19,26 @@ const Hive = () => {
         beeInOut: '',
         raindrops: '',
         expectedHarvestDate: '',
-    }); // New hive data
+        honeyLevel: '',
+    });
 
     // Fetch hive details
     const fetchHiveDetails = () => {
-        let url = `http://localhost:5000/hive-details?hiveNo=${hiveNo}`;
-
-        axios.get(url)
+        axios.get(`http://localhost:5000/hive-details?hiveNo=${hiveNo}`)
             .then(response => {
                 if (response.data.success) {
                     setHive(response.data.data);
-                    setEditData(response.data.data); // Populate the edit form with existing data
+                    setEditData(response.data.data);
+                    setMessage('');
                 } else {
                     setHive(null);
-                    setMessage('No hive details found');
+                    setMessage('No hive details found.');
                 }
             })
             .catch(error => {
                 setHive(null);
-                console.error('Error fetching hive details', error);
+                setMessage('Error fetching hive details');
             });
-    };
-
-    const handleInputChange = (event) => {
-        setHiveNo(event.target.value);
     };
 
     const handleSearch = () => {
@@ -57,19 +53,25 @@ const Hive = () => {
         setHiveNo('');
         setSearched(false);
         setMessage('');
+        setIsEditing(false);
+        setIsCreating(false);
     };
 
     const handleDelete = () => {
-        axios.delete(`http://localhost:5000/hive-details/${hiveNo}`)
-            .then(() => {
-                setHive(null); 
-                setMessage(`Hive #${hiveNo} has been deleted.`);
-                setSearched(false);
-            })
-            .catch(error => {
-                console.error('Error deleting hive', error);
-                setMessage('Failed to delete hive.');
-            });
+        if (window.confirm(`Are you sure you want to delete Hive #${hiveNo}?`)) {
+            axios.delete(`http://localhost:5000/hive-details?hiveNo=${hiveNo}`)
+                .then(() => {
+                    setMessage(`Hive #${hiveNo} has been deleted.`);
+                    setHive(null);
+                    setSearched(false);
+                    setHiveNo('');
+                    setIsEditing(false);
+                })
+                .catch(error => {
+                    console.error('Failed to delete hive:', error);
+                    setMessage('Failed to delete hive.');
+                });
+        }
     };
 
     const handleEditToggle = () => {
@@ -78,23 +80,25 @@ const Hive = () => {
 
     const handleEditInputChange = (e) => {
         const { name, value } = e.target;
-        setEditData({ ...editData, [name]: value });
+        setEditData(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
     const handleUpdate = () => {
-        axios.put(`http://localhost:5000/hive-details/${hiveNo}`, editData)
+        axios.put(`http://localhost:5000/hive-details`, editData)
             .then(() => {
-                setMessage(`Hive #${hiveNo} has been updated.`);
-                fetchHiveDetails(); // Refresh data after update
-                setIsEditing(false); // Exit edit mode
+                setMessage(`Hive #${editData.hiveNo} has been updated.`);
+                setIsEditing(false);
+                fetchHiveDetails();
             })
             .catch(error => {
-                console.error('Error updating hive', error);
+                console.error('Failed to update hive:', error);
                 setMessage('Failed to update hive.');
             });
     };
 
-    // Create Hive handlers
     const handleCreateToggle = () => {
         setIsCreating(!isCreating);
         setNewHive({
@@ -104,26 +108,27 @@ const Hive = () => {
             beeInOut: '',
             raindrops: '',
             expectedHarvestDate: '',
+            honeyLevel: '',
         });
     };
 
     const handleCreateInputChange = (e) => {
         const { name, value } = e.target;
-        setNewHive({ ...newHive, [name]: value });
+        setNewHive(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
     const handleCreate = () => {
-        console.log('Creating hive with data:', newHive); // Log the data being sent
-        axios.post(`http://localhost:5000/hive-details`, newHive)
-
+        axios.post('http://localhost:5000/hive-details', newHive)
             .then(() => {
                 setMessage(`Hive #${newHive.hiveNo} has been created.`);
                 setIsCreating(false);
                 setHive(null);
                 setHiveNo('');
             })
-            .catch(error => {
-                console.error('Error creating hive', error);
+            .catch(() => {
                 setMessage('Failed to create hive.');
             });
     };
@@ -137,14 +142,16 @@ const Hive = () => {
                     type="number"
                     placeholder="Enter Hive Number"
                     value={hiveNo}
-                    onChange={handleInputChange}
+                    onChange={(e) => setHiveNo(e.target.value)}
                 />
                 <button onClick={handleSearch}>Search</button>
                 <button onClick={handleClear} style={{ marginLeft: '10px' }}>Clear</button>
-                <button onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>Create Hive</button>
+                <button onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>
+                    {isCreating ? 'Cancel' : 'Create Hive'}
+                </button>
             </div>
 
-            {message && <p>{message}</p>} 
+            {message && <p>{message}</p>}
 
             {searched && hive && !isEditing && (
                 <div className="hive-card">
@@ -153,10 +160,10 @@ const Hive = () => {
                     <p><strong>Temperature:</strong> {hive.temperature}</p>
                     <p><strong>Bee In/Out:</strong> {hive.beeInOut}</p>
                     <p><strong>Raindrops:</strong> {hive.raindrops}</p>
-                    <p><strong>Current Date/Time:</strong> {new Date(hive.currentDateTime).toLocaleString()}</p>
                     <p><strong>Expected Harvest Date:</strong> {new Date(hive.expectedHarvestDate).toLocaleDateString()}</p>
+                    <p><strong>Honey Level:</strong> {hive.honeyLevel}</p>
                     <HivePieChart honeyLevel={hive.honeyLevel} />
-                    
+
                     <button onClick={handleDelete} style={{ marginTop: '10px' }}>Delete Hive</button>
                     <button onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Edit Hive</button>
                 </div>
@@ -211,6 +218,15 @@ const Hive = () => {
                                 onChange={handleEditInputChange}
                             />
                         </div>
+                        <div>
+                            <label>Honey Level: </label>
+                            <input
+                                type="text"
+                                name="honeyLevel"
+                                value={editData.honeyLevel}
+                                onChange={handleEditInputChange}
+                            />
+                        </div>
 
                         <button type="button" onClick={handleUpdate} style={{ marginTop: '10px' }}>Save Changes</button>
                         <button type="button" onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Cancel</button>
@@ -229,6 +245,7 @@ const Hive = () => {
                                 name="hiveNo"
                                 value={newHive.hiveNo}
                                 onChange={handleCreateInputChange}
+                                required
                             />
                         </div>
                         <div>
@@ -238,6 +255,7 @@ const Hive = () => {
                                 name="humidity"
                                 value={newHive.humidity}
                                 onChange={handleCreateInputChange}
+                                required
                             />
                         </div>
                         <div>
@@ -247,6 +265,7 @@ const Hive = () => {
                                 name="temperature"
                                 value={newHive.temperature}
                                 onChange={handleCreateInputChange}
+                                required
                             />
                         </div>
                         <div>
@@ -256,6 +275,7 @@ const Hive = () => {
                                 name="beeInOut"
                                 value={newHive.beeInOut}
                                 onChange={handleCreateInputChange}
+                                required
                             />
                         </div>
                         <div>
@@ -265,6 +285,7 @@ const Hive = () => {
                                 name="raindrops"
                                 value={newHive.raindrops}
                                 onChange={handleCreateInputChange}
+                                required
                             />
                         </div>
                         <div>
@@ -274,11 +295,21 @@ const Hive = () => {
                                 name="expectedHarvestDate"
                                 value={newHive.expectedHarvestDate}
                                 onChange={handleCreateInputChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Honey Level: </label>
+                            <input
+                                type="text"
+                                name="honeyLevel"
+                                value={newHive.honeyLevel}
+                                onChange={handleCreateInputChange}
+                                required
                             />
                         </div>
 
                         <button type="button" onClick={handleCreate} style={{ marginTop: '10px' }}>Create Hive</button>
-                        <button type="button" onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>Cancel</button>
                     </form>
                 </div>
             )}

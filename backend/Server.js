@@ -164,32 +164,27 @@ app.get('/hive-details', (req, res) => {
 
 
 
-//------------------------------Hive updation----------------------------------------------------------------
-app.put('/hivedetails/:hiveNo', (req, res) => {
-    const hiveNo = req.params.hiveNo;
-    const updatedHiveData = req.body; // The updated data from the frontend
+//------------------------------Hive updation and deletation----------------------------------------------------------------
 
-    const query = 'UPDATE hives SET ? WHERE hiveNo = ?';
-    db.query(query, [updatedHiveData, hiveNo], (err) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Database error' });
-        }
-        res.status(200).json({ success: true, message: `Hive #${hiveNo} updated successfully.` });
+app.put('/hive-details', (req, res) => {
+    const { hiveNo, humidity, temperature, beeInOut, raindrops, expectedHarvestDate, honeyLevel } = req.body;
+    const updatedHive = { humidity, temperature, beeInOut, raindrops, expectedHarvestDate, honeyLevel };
+    db.query('UPDATE hives SET ? WHERE hiveNo = ?', [updatedHive, hiveNo], (err) => {
+        if (err) return res.status(500).send('Error updating hive');
+        res.send('Hive updated successfully');
     });
 });
 
-//------------------------------Hive deletation----------------------------------------------------------------
-app.delete('/hivedetails/:hiveNo', (req, res) => {
-    const hiveNo = req.params.hiveNo;
-
-    const query = 'DELETE FROM hives WHERE hiveNo = ?';
-    db.query(query, [hiveNo], (err) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Database error' });
-        }
-        res.status(200).json({ success: true, message: `Hive #${hiveNo} deleted successfully.` });
+// Delete hive
+app.delete('/hive-details', (req, res) => {
+    const { hiveNo } = req.query;
+    db.query('DELETE FROM hives WHERE hiveNo = ?', [hiveNo], (err) => {
+        if (err) return res.status(500).send('Error deleting hive');
+        res.send('Hive deleted successfully');
     });
 });
+
+
 
 //------------------------------Hive creation----------------------------------------------------------------
 app.post('/hive-details', (req, res) => {
