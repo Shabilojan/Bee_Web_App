@@ -29,31 +29,7 @@ db.connect((err) => {
     }
     console.log('Connected to database');
 });
-
-
-
-// Login endpoint
-// app.post('/login', (req, res) => {
-//     const { username, password } = req.body;
-//     const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    
-//     db.query(query, [username, password], (err, results) => {
-//         if (err) {
-//             console.error('Error executing query:', err);
-//             res.status(500).send({ success: false, message: 'Database error' });
-//             return;
-//         }
-        
-//         if (results.length > 0) {
-//             const user = results[0]; // Assuming the first result is the correct user
-//             res.send({ success: true, role: user.role, message: 'Login successful' });
-//         } else {
-//             res.send({ success: false, message: 'Invalid credentials' });
-//         }
-//     });
-// });
-
-
+//------------------------------Login and logout----------------------------------------------------------------
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     const query = 'SELECT * FROM users WHERE username = ?';
@@ -87,6 +63,8 @@ app.post('/login', (req, res) => {
 });
 
 
+//------------------------------User creation----------------------------------------------------------------
+
 app.post('/user-details', async (req, res) => {
     const { name, email, phoneNumber, password, profilePicture,role , username} = req.body;
 
@@ -108,18 +86,18 @@ app.post('/user-details', async (req, res) => {
                 return res.status(400).json({ success: false, message: 'User already exists' });
             }
 
-            // Hash the password before saving
-            const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+            
+            const hashedPassword = await bcrypt.hash(password, 10); 
             console.log(hashedPassword)
 
             const newUser = {
                 name,
                 email,
                 phoneNumber,
-                password: hashedPassword, // Save hashed password
+                password: hashedPassword,
                 profilePicture,
                 username,
-                role // This can be a file path or URL
+                role 
             };
 
             // Insert user into the database
@@ -132,14 +110,14 @@ app.post('/user-details', async (req, res) => {
 
                 // Generate JWT token
                 const token = jwt.sign({ id: result.insertId, name, email }, JWT_SECRET, {
-                    expiresIn: '1h', // Token valid for 1 hour
+                    expiresIn: '1h', 
                 });
 
                 res.json({
                     success: true,
                     message: 'User created successfully',
                     userId: result.insertId,
-                    token, // Send the token to the client
+                    token, 
                 });
             });
         });
@@ -152,7 +130,7 @@ app.post('/user-details', async (req, res) => {
 
 
 
-// // Hive details for specific or all hives
+//------------------------------Hive deatails for specific hive----------------------------------------------------------------
 app.get('/hive-details', (req, res) => {
     const hiveNo = req.query.hiveNo;
 
@@ -186,7 +164,7 @@ app.get('/hive-details', (req, res) => {
 
 
 
-// Update hive details
+//------------------------------Hive updation----------------------------------------------------------------
 app.put('/hivedetails/:hiveNo', (req, res) => {
     const hiveNo = req.params.hiveNo;
     const updatedHiveData = req.body; // The updated data from the frontend
@@ -200,7 +178,7 @@ app.put('/hivedetails/:hiveNo', (req, res) => {
     });
 });
 
-// Delete hive
+//------------------------------Hive deletation----------------------------------------------------------------
 app.delete('/hivedetails/:hiveNo', (req, res) => {
     const hiveNo = req.params.hiveNo;
 
@@ -213,7 +191,7 @@ app.delete('/hivedetails/:hiveNo', (req, res) => {
     });
 });
 
-// POST route to create a new hive
+//------------------------------Hive creation----------------------------------------------------------------
 app.post('/hive-details', (req, res) => {
     const { hiveNo, humidity, temperature, beeInOut, raindrops, expectedHarvestDate } = req.body;
 
@@ -235,7 +213,7 @@ app.post('/hive-details', (req, res) => {
 
 
 
-// Update user
+//------------------------------user updation----------------------------------------------------------------
 app.put('/user-details/:id', (req, res) => {
     const userId = req.params.id;
     const { name, email, phoneNumber, profilePicture } = req.body;
@@ -250,7 +228,7 @@ app.put('/user-details/:id', (req, res) => {
     });
 });
 
-// Delete user
+//------------------------------User deletation----------------------------------------------------------------
 app.delete('/user-details/:id', (req, res) => {
     const userId = req.params.id;
     const query = 'DELETE FROM users WHERE id = ?';
@@ -264,7 +242,7 @@ app.delete('/user-details/:id', (req, res) => {
     });
 });
 
-// Get user by ID
+//------------------------------Get user by id----------------------------------------------------------------
 app.get('/user-details/:id', (req, res) => {
     const userId = req.params.id;
     const query = 'SELECT * FROM users WHERE id = ?';
@@ -282,29 +260,6 @@ app.get('/user-details/:id', (req, res) => {
     });
 });
 
-// Get all users
-app.get('/user-details/:id', (req, res) => {
-    const userId = req.params.id; // User ID from URL
-
-    // Validate that userId is a number (assuming ID is numeric)
-    if (isNaN(userId)) {
-        return res.status(400).send({ success: false, message: 'Invalid user ID format' });
-    }
-
-    const query = 'SELECT * FROM users WHERE id = ?';
-    db.query(query, [userId], (err, results) => {
-        if (err) {
-            console.error('Database error:', err); // Log the error for debugging
-            return res.status(500).send({ success: false, message: 'Database error' });
-        }
-
-        if (results.length > 0) {
-            return res.send({ success: true, data: results[0] });  // Return the first result
-        } else {
-            return res.send({ success: false, message: `No user found with id ${userId}` });
-        }
-    });
-});
 
 // Start server on port 5000
 const PORT = 5000;

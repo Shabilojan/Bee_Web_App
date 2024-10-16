@@ -207,80 +207,79 @@ const User = () => {
                 </div>
             )}
 
-            {isCreating && (
-                <div className="user-card">
-                    <h2>Create New User</h2>
-                    <form>
-                        <div>
-                            <label>Name: </label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={newUser.name}
-                                onChange={handleCreateInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Email: </label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={newUser.email}
-                                onChange={handleCreateInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Phone Number: </label>
-                            <input
-                                type="text"
-                                name="phoneNumber"
-                                value={newUser.phoneNumber}
-                                onChange={handleCreateInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Profile Picture URL: </label>
-                            <input
-                                type="text"
-                                name="profilePicture"
-                                value={newUser.profilePicture}
-                                onChange={handleCreateInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Username: </label>
-                            <input
-                                type="text"
-                                name="Username"
-                                value={newUser.username}
-                                onChange={handleCreateInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Password: </label>
-                            <input
-                                type="text"
-                                name="Password"
-                                value={newUser.password}
-                                onChange={handleCreateInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Role: </label>
-                            <input
-                                type="text"
-                                name="Username"
-                                value={newUser.role}
-                                onChange={handleCreateInputChange}
-                            />
-                        </div>
+{isCreating && (
+    <div className="user-card">
+        <h2>Create New User</h2>
+        <form>
+            <div>
+                <label>Name: </label>
+                <input
+                    type="text"
+                    name="name"
+                    value={newUser.name}
+                    onChange={handleCreateInputChange}
+                />
+            </div>
+            <div>
+                <label>Email: </label>
+                <input
+                    type="email"
+                    name="email"
+                    value={newUser.email}
+                    onChange={handleCreateInputChange}
+                />
+            </div>
+            <div>
+                <label>Phone Number: </label>
+                <input
+                    type="text"
+                    name="phoneNumber"
+                    value={newUser.phoneNumber}
+                    onChange={handleCreateInputChange}
+                />
+            </div>
+            <div>
+                <label>Profile Picture URL: </label>
+                <input
+                    type="text"
+                    name="profilePicture"
+                    value={newUser.profilePicture}
+                    onChange={handleCreateInputChange}
+                />
+            </div>
+            <div>
+                <label>Username: </label>
+                <input
+                    type="text"
+                    name="username"
+                    value={newUser.username}
+                    onChange={handleCreateInputChange}
+                />
+            </div>
+            <div>
+                <label>Password: </label>
+                <input
+                    type="password"
+                    name="password"
+                    value={newUser.password}
+                    onChange={handleCreateInputChange}
+                />
+            </div>
+            <div>
+                <label>Role: </label>
+                <input
+                    type="text"
+                    name="role"
+                    value={newUser.role}
+                    onChange={handleCreateInputChange}
+                />
+            </div>
 
-
-                        <button type="button" onClick={handleCreate} style={{ marginTop: '10px' }}>Create User</button>
-                        <button type="button" onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>Cancel</button>
-                    </form>
-                </div>
-            )}
+            <button type="button" onClick={handleCreate} style={{ marginTop: '10px' }}>Create User</button>
+            <button type="button" onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>Cancel</button>
+        </form>
+    </div>
+)}
         </div>
     );
 };
