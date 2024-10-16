@@ -247,6 +247,34 @@ const User = () => {
                                 onChange={handleCreateInputChange}
                             />
                         </div>
+                        <div>
+                            <label>Username: </label>
+                            <input
+                                type="text"
+                                name="Username"
+                                value={newUser.username}
+                                onChange={handleCreateInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Password: </label>
+                            <input
+                                type="text"
+                                name="Password"
+                                value={newUser.password}
+                                onChange={handleCreateInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Role: </label>
+                            <input
+                                type="text"
+                                name="Username"
+                                value={newUser.role}
+                                onChange={handleCreateInputChange}
+                            />
+                        </div>
+
 
                         <button type="button" onClick={handleCreate} style={{ marginTop: '10px' }}>Create User</button>
                         <button type="button" onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>Cancel</button>

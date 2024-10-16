@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
 import './Dashboard.css';
-import profilePic from './image.png'; // Importing the image
+import image from './image.png'; // Importing the image
 
-const AdminDashboard = () => {
+const UserDashboard = () => {
     const [hiveCount, setHiveCount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetching the hive count (specific to admin functionality)
+        // Fetching the hive count (specific to user functionality)
         fetch('/api/dashboard-counts')
             .then(response => response.json())
             .then(data => {
@@ -30,10 +30,10 @@ const AdminDashboard = () => {
             <Sidebar />
             <div className="main-content">
                 <header className="header">
-                    <h2>Admin Dashboard</h2>
+                    <h2>User Dashboard</h2>
                     <div className="profile">
-                        <img src={profilePic} alt="Admin" className="profile-pic" /> {/* Use the imported image */}
-                        <span className="admin-name">Admin</span>
+                        <img src={image} alt="User" className="profile-pic" />
+                        <span className="user-name">User</span>
                         <button onClick={handleLogout} className="logout-button">Logout</button>
                     </div>
                 </header>
@@ -41,28 +41,18 @@ const AdminDashboard = () => {
                 <div className="metrics">
                     <div className="metric-card">
                         <h3>Total Hives</h3>
-                        <p>{hiveCount}</p> {/* Displaying hive count */}
-                    </div>
-                    <div className="metric-card">
-                        <h3>Total Users</h3>
-                        <p>{hiveCount}</p> {/* Displaying hive count */}
+                        <p>{hiveCount}</p>
                     </div>
                 </div>
 
                 <div className="card-container">
                     <div className="card">
-                        <h3>User Management</h3>
-                        <button onClick={() => navigate('/user-details')}>Manage Users</button>
-                    </div>
-
-                    <div className="card">
                         <h3>Hive Management</h3>
-                        <button onClick={() => navigate('/hive')}>Manage Hives</button>
-                    </div>
-
-                    <div className="card">
-                        <h3>Hive Details</h3>
                         <button onClick={() => navigate('/hive-details')}>View Hive Details</button>
+                    </div>
+                    <div className="card">
+                        <h3>Hive Checker</h3>
+                        <button onClick={() => navigate('/hive')}>View specific Hive</button>
                     </div>
                 </div>
             </div>
@@ -70,4 +60,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard;
+export default UserDashboard;

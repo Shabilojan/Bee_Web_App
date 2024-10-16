@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './Admin/AdminDashboard';
 import User from './User/User';
 import Login from './Login/Login';
+import UserDashboard from './Admin/UserDashboard';
 import Hive from './Hive/Hive';
 import Hivedetails from './Hive/Hivedetails'
 import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute component
+
 
 const App = () => {
     return (
@@ -29,7 +31,7 @@ const App = () => {
                     path="/user"
                     element={
                         <ProtectedRoute requiredRole="user">
-                            <User />
+                            <UserDashboard />
                         </ProtectedRoute>
                     }
                 />
@@ -50,6 +52,15 @@ const App = () => {
                     element={
                         <ProtectedRoute>
                             <Hivedetails/>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/user-details"
+                    element={
+                        <ProtectedRoute>
+                            <User/>
                         </ProtectedRoute>
                     }
                 />

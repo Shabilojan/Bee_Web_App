@@ -231,21 +231,6 @@ app.post('/hive-details', (req, res) => {
     });
 });
 
-//------------------user management----------------
-// Create user
-// app.post('/user-details', (req, res) => {
-//     const { name, email, phoneNumber, profilePicture } = req.body;
-//     const newUser = { name, email, phoneNumber, profilePicture };
-//     const query = 'INSERT INTO users SET ?';
-
-//     db.query(query, newUser, (err, result) => {
-//         if (err) {
-//             res.status(500).json({ success: false, message: 'Database error' });
-//             return;
-//         }
-//         res.json({ success: true, message: 'User created', userId: result.insertId });
-//     });
-// });
 
 
 

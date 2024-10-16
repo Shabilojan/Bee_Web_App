@@ -9,33 +9,6 @@ const Login = () => {
     const [message, setMessage] = useState('');
     const navigate = useNavigate(); // For navigation
 
-    // const handleLogin = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const response = await axios.post('http://localhost:5000/login', { username, password });
-
-    //         console.log(response.data); // Log the response for debugging
-
-    //         if (response.data.success) {
-    //             const userRole = response.data.role; // Assuming the role is returned in response
-    //             setMessage('Login successful!');
-
-    //             // Redirect based on role
-    //             if (userRole === 'Admin') {
-    //                 navigate('/Admin'); // Correctly navigate to AdminDashboard
-    //             } else if (userRole === 'user') {
-    //                 navigate('/user'); // Navigate to User Dashboard
-    //             } else {
-    //                 setMessage('You are not authorized to access the Admin Dashboard.');
-    //             }
-    //         } else {
-    //             setMessage('Invalid credentials, please try again.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error during login', error);
-    //         setMessage('Something went wrong. Please try again later.');
-    //     }
-    // };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -102,7 +75,7 @@ const Login = () => {
                                 Remember
                             </label>
                             <a href="/">Forgot Password?</a>
-                            <a href="/">Create account</a>
+                           
                         </div>
                         <button type="submit">Submit</button>
                     </div>
