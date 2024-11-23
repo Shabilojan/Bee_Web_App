@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
+import User from '../User/User';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -15,10 +16,10 @@ const Login = () => {
         if (token) {
             // Redirect to the appropriate dashboard if the user is already logged in
             const role = localStorage.getItem('role');
-            if (role === 'Admin') {
+            if (role === 'admin'||'Admin') {
                 navigate('/Admin'); // Navigate to Admin Dashboard
-            } else if (role === 'user') {
-                navigate('/user'); // Navigate to User Dashboard
+            } else if (role === 'user' ||'User') {
+                navigate('/User'); // Navigate to User Dashboard
             }
         }
     }, [navigate]);
@@ -39,9 +40,9 @@ const Login = () => {
                 localStorage.setItem('role', userRole);
     
                 setMessage('Login successful!');
-    
+            
                 // Clear browser history and redirect based on the user's role
-                if (userRole === 'Admin') {
+                if (userRole === 'admin') {
                     navigate('/Admin'); // Navigate to AdminDashboard
                 } else if (userRole === 'user') {
                     navigate('/user'); // Navigate to User Dashboard
