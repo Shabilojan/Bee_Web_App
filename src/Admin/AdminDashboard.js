@@ -5,23 +5,34 @@ import './Dashboard.css';
 import profilePic from './image.png'; // Importing the image
 
 const AdminDashboard = () => {
-    const [hiveCount, setHiveCount] = useState(0);
     const navigate = useNavigate();
+    const [userCount, setUserCount] = useState(0);
+    const [hiveCount, setHiveCount] = useState(0);
 
     useEffect(() => {
-        // Fetching the hive count (specific to admin functionality)
-        fetch('/api/dashboard-counts')
-            .then(response => response.json())
-            .then(data => {
-                setHiveCount(data.hiveCount);
-            })
-            .catch(error => console.error('Error fetching hive count:', error));
+        const fetchData = async () => {
+            try {
+                // Fetch hive count
+                const hiveResponse = await fetch('http://localhost:5000/hive-count');
+                const hiveData = await hiveResponse.json();
+                setHiveCount(hiveData.count);
+
+                // Fetch user count
+                const userResponse = await fetch('http://localhost:5000/user-count');
+                const userData = await userResponse.json();
+                setUserCount(userData.count);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                // Handle error, e.g., display an error message to the user
+            }
+        };
+
+        fetchData();
     }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token'); // Remove the JWT token from local storage
         localStorage.removeItem('role'); // Remove the user role from local storage
-
         navigate('/'); // Navigate to the login page or home page
     };
 
@@ -45,7 +56,7 @@ const AdminDashboard = () => {
                     </div>
                     <div className="metric-card">
                         <h3>Total Users</h3>
-                        <p>{hiveCount}</p> {/* Displaying hive count */}
+                        <p>{userCount}</p> {/* Displaying user count */}
                     </div>
                 </div>
 

@@ -5,17 +5,24 @@ import './Dashboard.css';
 import image from './image.png'; // Importing the image
 
 const UserDashboard = () => {
-    const [hiveCount, setHiveCount] = useState(0);
     const navigate = useNavigate();
+    const [hiveCount, setHiveCount] = useState(0);
 
     useEffect(() => {
-        // Fetching the hive count (specific to user functionality)
-        fetch('/api/dashboard-counts')
-            .then(response => response.json())
-            .then(data => {
-                setHiveCount(data.hiveCount);
-            })
-            .catch(error => console.error('Error fetching hive count:', error));
+        const fetchData = async () => {
+            try {
+                // Fetch hive count
+                const hiveResponse = await fetch('http://localhost:5000/hive-count');
+                const hiveData = await hiveResponse.json();
+                setHiveCount(hiveData.count)
+            
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                // Handle error, e.g., display an error message to the user
+            }
+        };
+
+        fetchData();
     }, []);
 
     const handleLogout = () => {
