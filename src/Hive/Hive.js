@@ -3,8 +3,12 @@ import axios from 'axios';
 import './Hive.css';
 import './Hivedetails.css';
 import HivePieChart from './HivePieChart';
+import Sidebar from '../Sidebar/Sidebar';
+import profilePic from '../Admin/image.png'; 
+import { useNavigate } from 'react-router-dom';
 
 const Hive = () => {
+    const navigate = useNavigate();
     const [hive, setHive] = useState(null);
     const [hiveNo, setHiveNo] = useState('');
     const [searched, setSearched] = useState(false);
@@ -24,6 +28,12 @@ const Hive = () => {
 
     // Check user role from local storage
     const userRole = localStorage.getItem('role'); // Fetch the role from localStorage
+
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Remove the JWT token from local storage
+        localStorage.removeItem('role'); // Remove the user role from local storage
+        navigate('/'); // Navigate to the login page or home page
+    };
 
     // Fetch hive details
     const fetchHiveDetails = () => {
@@ -137,9 +147,20 @@ const Hive = () => {
     };
 
     return (
+        <div className="dashboard">
+        <Sidebar />
+        <div className="main-content">
+            <header className="header">
+                <h2>User Management</h2>
+                <div className="profile">
+                    <img src={profilePic} alt="Admin" className="profile-pic" /> {/* Use the imported image */}
+                    <span className="admin-name">Admin</span>
+                    <button onClick={handleLogout} className="logout-button">Logout</button>
+                </div>
+            </header>
+           
         <div className="hive-details-container">
-            <h1>Hive Details</h1>
-
+           
             <div className="search-bar">
                 <input
                     type="number"
@@ -323,6 +344,8 @@ const Hive = () => {
                     </form>
                 </div>
             )}
+        </div>
+        </div>
         </div>
     );
 };
