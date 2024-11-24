@@ -25,6 +25,9 @@ const Hive = () => {
         expectedHarvestDate: '',
         honeyLevel: '',
     });
+    const [accountDetails, setAccountDetails] = useState(null);
+    const [error, setError] = useState('');
+
 
     // Check user role from local storage
     const userRole = localStorage.getItem('role'); // Fetch the role from localStorage
@@ -144,7 +147,38 @@ const Hive = () => {
             .catch(() => {
                 setMessage('Failed to create hive.');
             });
+
+    
     };
+    useEffect(() => {
+        const fetchAccountDetails = async () => {
+            const token = localStorage.getItem('token'); 
+
+            try {
+                const response = await fetch('http://localhost:5000/account-details', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    setAccountDetails(data.data);
+                } else {
+                    setError(data.message);
+                }
+            } catch (err) {
+                setError('Failed to fetch account details.');
+            }
+        };
+
+        fetchAccountDetails();
+    }, []);
+
+    if (error) return <p>{error}</p>;
+    if (!accountDetails) return <p>Loading...</p>;
 
     return (
         <div className="dashboard">
@@ -153,10 +187,14 @@ const Hive = () => {
             <header className="header">
                 <h2>User Management</h2>
                 <div className="profile">
-                    <img src={profilePic} alt="Admin" className="profile-pic" /> {/* Use the imported image */}
-                    <span className="admin-name">Admin</span>
-                    <button onClick={handleLogout} className="logout-button">Logout</button>
-                </div>
+                        <img
+                            src={accountDetails.profilePicture || 'default-profile.png'} // Dynamic profile picture
+                            alt="Profile"
+                            className="profile-pic"
+                        />
+                        <span className="admin-name">{accountDetails.name}</span>
+                        <button onClick={handleLogout} className="logout-button">Logout</button>
+                    </div>
             </header>
            
         <div className="hive-details-container">

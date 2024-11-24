@@ -7,6 +7,7 @@ import Login from './Login/Login';
 import Hive from './Hive/Hive';
 import Hivedetails from './Hive/Hivedetails';
 import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute component
+import AccountDetailsScreen from './Admin/AccountDetailsScreen';
 
 const App = () => {
   return (
@@ -75,6 +76,16 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+<Route
+          path="/account-details"
+          element={
+            <ProtectedRoute>
+              <AccountDetailsScreen/>
+            </ProtectedRoute>
+          }
+        />
+
 
         {/* Handle unexpected routes */}
         <Route path="*" element={<div>404: Not Found</div>} />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css'; // Importing sidebar styles
-
+import '../Admin/AccountDetailsScreen';
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Sidebar = () => {
         />
         <li><Link to="/User">User Management</Link></li>
         <li><Link to="/hive">Hive Management</Link></li>
-        <li><Link to={`/account/${localStorage.getItem('username')}`}>Account Details</Link></li>
+        <li><Link to="/account-details">Account Details</Link></li>
         <li><button onClick={handleLogout} className="logout-link">Logout</button></li>
       </ul>
     </div>

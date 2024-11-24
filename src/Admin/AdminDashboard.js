@@ -8,6 +8,9 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
     const [userCount, setUserCount] = useState(0);
     const [hiveCount, setHiveCount] = useState(0);
+    const [accountDetails, setAccountDetails] = useState(null);
+    const [error, setError] = useState('');
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,6 +33,37 @@ const AdminDashboard = () => {
         fetchData();
     }, []);
 
+    
+    useEffect(() => {
+        const fetchAccountDetails = async () => {
+            const token = localStorage.getItem('token'); 
+
+            try {
+                const response = await fetch('http://localhost:5000/account-details', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    setAccountDetails(data.data);
+                } else {
+                    setError(data.message);
+                }
+            } catch (err) {
+                setError('Failed to fetch account details.');
+            }
+        };
+
+        fetchAccountDetails();
+    }, []);
+
+    if (error) return <p>{error}</p>;
+    if (!accountDetails) return <p>Loading...</p>;
+
     const handleLogout = () => {
         localStorage.removeItem('token'); // Remove the JWT token from local storage
         localStorage.removeItem('role'); // Remove the user role from local storage
@@ -43,8 +77,12 @@ const AdminDashboard = () => {
                 <header className="header">
                     <h2>Admin Dashboard</h2>
                     <div className="profile">
-                        <img src={profilePic} alt="Admin" className="profile-pic" /> {/* Use the imported image */}
-                        <span className="admin-name">Admin</span>
+                        <img
+                            src={accountDetails.profilePicture || 'default-profile.png'} // Dynamic profile picture
+                            alt="Profile"
+                            className="profile-pic"
+                        />
+                        <span className="admin-name">{accountDetails.name}</span>
                         <button onClick={handleLogout} className="logout-button">Logout</button>
                     </div>
                 </header>
