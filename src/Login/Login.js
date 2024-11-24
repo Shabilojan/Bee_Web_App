@@ -86,14 +86,7 @@ const Login = () => {
                         />
                     </div>
                     <div className="actions">
-                        <div className="remember-forgot">
-                            <label>
-                                <input type="checkbox" />
-                                Remember
-                            </label>
-                            <a href="/">Forgot Password?</a>
-                        </div>
-                        <button type="submit">Submit</button>
+                        <button type="submit">Login</button>
                     </div>
                 </form>
                 {message && <p>{message}</p>}

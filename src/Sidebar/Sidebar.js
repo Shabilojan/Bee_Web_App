@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css'; // Importing sidebar styles
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear(); // Clear all local storage items
+    navigate('/'); // Navigate to the login page or home page
   };
 
   return (
@@ -15,17 +22,15 @@ const Sidebar = () => {
       </button>
       <h3>Dashboard</h3>
       <ul>
-        
-          <img className="login-image"
-            src={require('../Login/Logo2.png')}
-            alt="Login Illustration"
-            style={{ width: '200px', height: 'auto' }}
-          />
-      
-        <li>User Management</li>
-        <li>Hive Management</li>
-        <li>Account Details</li>
-        <li>Logout</li>
+        <img className="login-image"
+          src={require('../Login/Logo2.png')}
+          alt="Login Illustration"
+          style={{ width: '200px', height: 'auto' }}
+        />
+        <li><Link to="/user">User Management</Link></li>
+        <li><Link to="/hive">Hive Management</Link></li>
+        <li><Link to={`/account/${localStorage.getItem('username')}`}>Account Details</Link></li>
+        <li><button onClick={handleLogout} className="logout-link">Logout</button></li>
       </ul>
     </div>
   );
