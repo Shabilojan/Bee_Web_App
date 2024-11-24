@@ -170,7 +170,7 @@ const Hive = () => {
                 />
                 <button onClick={handleSearch}>Search</button>
                 <button onClick={handleClear} style={{ marginLeft: '10px' }}>Clear</button>
-                {userRole === 'Admin' && (
+                {userRole === 'admin' && (
                     <button onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>
                         {isCreating ? 'Cancel' : 'Create Hive'}
                     </button>
@@ -190,7 +190,7 @@ const Hive = () => {
                     <p><strong>Honey Level:</strong> {hive.honeyLevel}</p>
                     <HivePieChart honeyLevel={hive.honeyLevel} />
 
-                    {userRole === 'Admin' && (
+                    {userRole === 'admin' && (
                         <>
                             <button onClick={handleDelete} style={{ marginTop: '10px' }}>Delete Hive</button>
                             <button onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Edit Hive</button>
@@ -264,7 +264,7 @@ const Hive = () => {
                 </div>
             )}
 
-            {isCreating && userRole === 'Admin' && (
+            {isCreating && userRole === 'admin' && (
                 <div className="hive-card">
                     <h2>Create New Hive</h2>
                     <form>

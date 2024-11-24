@@ -27,7 +27,7 @@ const Sidebar = () => {
           alt="Login Illustration"
           style={{ width: '200px', height: 'auto' }}
         />
-        <li><Link to="/user">User Management</Link></li>
+        <li><Link to="/User">User Management</Link></li>
         <li><Link to="/hive">Hive Management</Link></li>
         <li><Link to={`/account/${localStorage.getItem('username')}`}>Account Details</Link></li>
         <li><button onClick={handleLogout} className="logout-link">Logout</button></li>
