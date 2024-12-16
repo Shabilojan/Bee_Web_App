@@ -4,7 +4,6 @@ import './Hive.css';
 import './Hivedetails.css';
 import HivePieChart from './HivePieChart';
 import Sidebar from '../Sidebar/Sidebar';
-import profilePic from '../Admin/image.png'; 
 import { useNavigate } from 'react-router-dom';
 
 const Hive = () => {
@@ -27,7 +26,6 @@ const Hive = () => {
     });
     const [accountDetails, setAccountDetails] = useState(null);
     const [error, setError] = useState('');
-
 
     // Check user role from local storage
     const userRole = localStorage.getItem('role'); // Fetch the role from localStorage
@@ -136,7 +134,25 @@ const Hive = () => {
         }));
     };
 
+    const validateForm = (hiveData) => {
+        let errors = [];
+        if (!hiveData.hiveNo || isNaN(hiveData.hiveNo)) errors.push('Hive number must be a valid number.');
+        if (!hiveData.humidity || isNaN(hiveData.humidity) || hiveData.humidity < 0 || hiveData.humidity > 100) errors.push('Humidity must be a number between 0 and 100.');
+        if (!hiveData.temperature || isNaN(hiveData.temperature)) errors.push('Temperature must be a valid number.');
+        if (!hiveData.beeInOut || !/^\d+\/\d+$/.test(hiveData.beeInOut)) errors.push('Bee In/Out must follow the format "XX/XX".');
+        if (!hiveData.raindrops || isNaN(hiveData.raindrops)) errors.push('Raindrops must be a valid number.');
+        if (!hiveData.expectedHarvestDate) errors.push('Expected Harvest Date is required.');
+        if (!hiveData.honeyLevel) errors.push('Honey level is required.');
+        return errors;
+    };
+
     const handleCreate = () => {
+        const errors = validateForm(newHive);
+        if (errors.length > 0) {
+            setMessage(errors.join(', '));
+            return;
+        }
+
         axios.post('http://localhost:5000/hive-details', newHive)
             .then(() => {
                 setMessage(`Hive #${newHive.hiveNo} has been created.`);
@@ -147,12 +163,11 @@ const Hive = () => {
             .catch(() => {
                 setMessage('Failed to create hive.');
             });
-
-    
     };
+
     useEffect(() => {
         const fetchAccountDetails = async () => {
-            const token = localStorage.getItem('token'); 
+            const token = localStorage.getItem('token');
 
             try {
                 const response = await fetch('http://localhost:5000/account-details', {
@@ -182,11 +197,11 @@ const Hive = () => {
 
     return (
         <div className="dashboard">
-        <Sidebar />
-        <div className="main-content">
-            <header className="header">
-                <h2>User Management</h2>
-                <div className="profile">
+            <Sidebar />
+            <div className="main-content">
+                <header className="header">
+                    <h2>User Management</h2>
+                    <div className="profile">
                         <img
                             src={accountDetails.profilePicture || 'default-profile.png'} // Dynamic profile picture
                             alt="Profile"
@@ -195,195 +210,183 @@ const Hive = () => {
                         <span className="admin-name">{accountDetails.name}</span>
                         <button onClick={handleLogout} className="logout-button">Logout</button>
                     </div>
-            </header>
-           
-        <div className="hive-details-container">
-           
-            <div className="search-bar">
-                <input
-                    type="number"
-                    placeholder="Enter Hive Number"
-                    value={hiveNo}
-                    onChange={(e) => setHiveNo(e.target.value)}
-                />
-                <button onClick={handleSearch}>Search</button>
-                <button onClick={handleClear} style={{ marginLeft: '10px' }}>Clear</button>
-                {userRole === 'admin' && (
-                    <button onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>
-                        {isCreating ? 'Cancel' : 'Create Hive'}
-                    </button>
-                )}
-            </div>
+                </header>
 
-            {message && <p>{message}</p>}
+                <div className="hive-details-container">
+                    <div className="search-bar">
+                        <input
+                            type="number"
+                            placeholder="Enter Hive Number"
+                            value={hiveNo}
+                            onChange={(e) => setHiveNo(e.target.value)}
+                        />
+                        <button onClick={handleSearch}>Search</button>
+                        <button onClick={handleClear} style={{ marginLeft: '10px' }}>Clear</button>
+                        {userRole === 'admin' && (
+                            <button onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>
+                                {isCreating ? 'Cancel' : 'Create Hive'}
+                            </button>
+                        )}
+                    </div>
 
-            {searched && hive && !isEditing && (
-                <div className="hive-card">
-                    <h2>Hive #{hive.hiveNo}</h2>
-                    <p><strong>Humidity:</strong> {hive.humidity}</p>
-                    <p><strong>Temperature:</strong> {hive.temperature}</p>
-                    <p><strong>Bee In/Out:</strong> {hive.beeInOut}</p>
-                    <p><strong>Raindrops:</strong> {hive.raindrops}</p>
-                    <p><strong>Expected Harvest Date:</strong> {new Date(hive.expectedHarvestDate).toLocaleDateString()}</p>
-                    <p><strong>Honey Level:</strong> {hive.honeyLevel}</p>
-                    <HivePieChart honeyLevel={hive.honeyLevel} />
+                    {message && <p>{message}</p>}
 
-                    {userRole === 'admin' && (
-                        <>
-                            <button onClick={handleDelete} style={{ marginTop: '10px' }}>Delete Hive</button>
-                            <button onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Edit Hive</button>
-                        </>
+                    {searched && hive && !isEditing && (
+                        <div className="hive-card">
+                            <h2>Hive #{hive.hiveNo}</h2>
+                            <p><strong>Humidity:</strong> {hive.humidity}</p>
+                            <p><strong>Temperature:</strong> {hive.temperature}</p>
+                            <p><strong>Bee In/Out:</strong> {hive.beeInOut}</p>
+                            <p><strong>Raindrops:</strong> {hive.raindrops}</p>
+                            <p><strong>Expected Harvest Date:</strong> {new Date(hive.expectedHarvestDate).toLocaleDateString()}</p>
+                            <p><strong>Honey Level:</strong> {hive.honeyLevel}</p>
+                            <HivePieChart honeyLevel={hive.honeyLevel} />
+
+                            {userRole === 'admin' && (
+                                <>
+                                    <button onClick={handleDelete} style={{ marginTop: '10px' }}>Delete Hive</button>
+                                    <button onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Edit Hive</button>
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                    {searched && isEditing && (
+                        <div className="hive-card">
+                            <h2>Edit Hive #{hive.hiveNo}</h2>
+                            <form>
+                                <div>
+                                    <label>Humidity: </label>
+                                    <input
+                                        type="number"
+                                        name="humidity"
+                                        value={editData.humidity}
+                                        onChange={handleEditInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Temperature: </label>
+                                    <input
+                                        type="number"
+                                        name="temperature"
+                                        value={editData.temperature}
+                                        onChange={handleEditInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Bee In/Out: </label>
+                                    <input
+                                        type="text"
+                                        name="beeInOut"
+                                        value={editData.beeInOut}
+                                        onChange={handleEditInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Raindrops: </label>
+                                    <input
+                                        type="number"
+                                        name="raindrops"
+                                        value={editData.raindrops}
+                                        onChange={handleEditInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Expected Harvest Date: </label>
+                                    <input
+                                        type="date"
+                                        name="expectedHarvestDate"
+                                        value={editData.expectedHarvestDate}
+                                        onChange={handleEditInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Honey Level: </label>
+                                    <input
+                                        type="text"
+                                        name="honeyLevel"
+                                        value={editData.honeyLevel}
+                                        onChange={handleEditInputChange}
+                                    />
+                                </div>
+                                <button type="button" onClick={handleUpdate}>Update</button>
+                            </form>
+                        </div>
+                    )}
+
+                    {isCreating && (
+                        <div className="hive-card">
+                            <h2>Create New Hive</h2>
+                            <form>
+                                <div>
+                                    <label>Hive Number: </label>
+                                    <input
+                                        type="text"
+                                        name="hiveNo"
+                                        value={newHive.hiveNo}
+                                        onChange={handleCreateInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Humidity: </label>
+                                    <input
+                                        type="number"
+                                        name="humidity"
+                                        value={newHive.humidity}
+                                        onChange={handleCreateInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Temperature: </label>
+                                    <input
+                                        type="number"
+                                        name="temperature"
+                                        value={newHive.temperature}
+                                        onChange={handleCreateInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Bee In/Out: </label>
+                                    <input
+                                        type="text"
+                                        name="beeInOut"
+                                        value={newHive.beeInOut}
+                                        onChange={handleCreateInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Raindrops: </label>
+                                    <input
+                                        type="number"
+                                        name="raindrops"
+                                        value={newHive.raindrops}
+                                        onChange={handleCreateInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Expected Harvest Date: </label>
+                                    <input
+                                        type="date"
+                                        name="expectedHarvestDate"
+                                        value={newHive.expectedHarvestDate}
+                                        onChange={handleCreateInputChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Honey Level: </label>
+                                    <input
+                                        type="text"
+                                        name="honeyLevel"
+                                        value={newHive.honeyLevel}
+                                        onChange={handleCreateInputChange}
+                                    />
+                                </div>
+                                <button type="button" onClick={handleCreate}>Create Hive</button>
+                            </form>
+                        </div>
                     )}
                 </div>
-            )}
-
-            {searched && isEditing && (
-                <div className="hive-card">
-                    <h2>Edit Hive #{hive.hiveNo}</h2>
-                    <form>
-                        <div>
-                            <label>Humidity: </label>
-                            <input
-                                type="number"
-                                name="humidity"
-                                value={editData.humidity}
-                                onChange={handleEditInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Temperature: </label>
-                            <input
-                                type="number"
-                                name="temperature"
-                                value={editData.temperature}
-                                onChange={handleEditInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Bee In/Out: </label>
-                            <input
-                                type="text"
-                                name="beeInOut"
-                                value={editData.beeInOut}
-                                onChange={handleEditInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Raindrops: </label>
-                            <input
-                                type="number"
-                                name="raindrops"
-                                value={editData.raindrops}
-                                onChange={handleEditInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Expected Harvest Date: </label>
-                            <input
-                                type="date"
-                                name="expectedHarvestDate"
-                                value={editData.expectedHarvestDate}
-                                onChange={handleEditInputChange}
-                            />
-                        </div>
-                        <div>
-                            <label>Honey Level: </label>
-                            <input
-                                type="text"
-                                name="honeyLevel"
-                                value={editData.honeyLevel}
-                                onChange={handleEditInputChange}
-                            />
-                        </div>
-
-                        <button type="button" onClick={handleUpdate} style={{ marginTop: '10px' }}>Save Changes</button>
-                        <button type="button" onClick={handleEditToggle} style={{ marginLeft: '10px' }}>Cancel</button>
-                    </form>
-                </div>
-            )}
-
-            {isCreating && userRole === 'admin' && (
-                <div className="hive-card">
-                    <h2>Create New Hive</h2>
-                    <form>
-                        <div>
-                            <label>Hive Number: </label>
-                            <input
-                                type="number"
-                                name="hiveNo"
-                                value={newHive.hiveNo}
-                                onChange={handleCreateInputChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Humidity: </label>
-                            <input
-                                type="number"
-                                name="humidity"
-                                value={newHive.humidity}
-                                onChange={handleCreateInputChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Temperature: </label>
-                            <input
-                                type="number"
-                                name="temperature"
-                                value={newHive.temperature}
-                                onChange={handleCreateInputChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Bee In/Out: </label>
-                            <input
-                                type="text"
-                                name="beeInOut"
-                                value={newHive.beeInOut}
-                                onChange={handleCreateInputChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Raindrops: </label>
-                            <input
-                                type="number"
-                                name="raindrops"
-                                value={newHive.raindrops}
-                                onChange={handleCreateInputChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Expected Harvest Date: </label>
-                            <input
-                                type="date"
-                                name="expectedHarvestDate"
-                                value={newHive.expectedHarvestDate}
-                                onChange={handleCreateInputChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label>Honey Level: </label>
-                            <input
-                                type="text"
-                                name="honeyLevel"
-                                value={newHive.honeyLevel}
-                                onChange={handleCreateInputChange}
-                                required
-                            />
-                        </div>
-
-                        <button type="button" onClick={handleCreate} style={{ marginTop: '10px' }}>Create Hive</button>
-                        <button type="button" onClick={handleCreateToggle} style={{ marginLeft: '10px' }}>Cancel</button>
-                    </form>
-                </div>
-            )}
-        </div>
-        </div>
+            </div>
         </div>
     );
 };

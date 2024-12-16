@@ -8,6 +8,7 @@ import Hive from './Hive/Hive';
 import Hivedetails from './Hive/Hivedetails';
 import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute component
 import AccountDetailsScreen from './Admin/AccountDetailsScreen';
+import BeeFarming from './Admin/BeeFarming';
 
 const App = () => {
   return (
@@ -37,7 +38,8 @@ const App = () => {
             }
           }}
         />
-
+        
+        
         <Route
           path="/User"
           element={
@@ -48,7 +50,6 @@ const App = () => {
 
         />
 
-        {/* Protected routes for Hive (accessible to all authenticated users) */}
         <Route
           path="/Hive"
           element={
@@ -67,7 +68,6 @@ const App = () => {
           }
         />
 
-        {/* Protected route for user details (accessible to all authenticated users) */}
         <Route
           path="/user-details"
           element={
@@ -87,8 +87,15 @@ const App = () => {
         />
 
 
-        {/* Handle unexpected routes */}
-        <Route path="*" element={<div>404: Not Found</div>} />
+<Route
+          path="/BeeFarming"
+          element={
+            <ProtectedRoute>
+              <BeeFarming/>
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </Router>
   );

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css'; // Importing sidebar styles
 import '../Admin/AccountDetailsScreen';
+import '../Admin/BeeFarming';
+import '../Admin/BeeFarming.css';  
+    
+
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
@@ -30,6 +34,7 @@ const Sidebar = () => {
         <li><Link to="/User">User Management</Link></li>
         <li><Link to="/hive">Hive Management</Link></li>
         <li><Link to="/account-details">Account Details</Link></li>
+        <li><Link to="/BeeFarming">Bee Farming</Link></li>
         <li><button onClick={handleLogout} className="logout-link">Logout</button></li>
       </ul>
     </div>

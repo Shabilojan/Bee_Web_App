@@ -18,7 +18,10 @@ const User = () => {
         name: '',
         email: '',
         phoneNumber: '',
-        profilePicture: ''
+        profilePicture: '',
+        username: '',
+        password: '',
+        role: ''
     });
 
     const handleLogout = () => {
@@ -26,6 +29,7 @@ const User = () => {
         localStorage.removeItem('role'); // Remove the user role from local storage
         navigate('/'); // Navigate to the login page or home page
     };
+
     // Fetch user details
     const fetchUserDetails = () => {
         if (!userId) {
@@ -58,7 +62,9 @@ const User = () => {
     };
 
     const handleSearch = () => {
-        if (userId) {
+        if (!userId) {
+            setMessage('Please enter a user ID.');
+        } else {
             setSearched(true);
             fetchUserDetails();
         }
@@ -114,7 +120,10 @@ const User = () => {
             name: '',
             email: '',
             phoneNumber: '',
-            profilePicture: ''
+            profilePicture: '',
+            username: '',
+            password: '',
+            role: ''
         });
     };
 
@@ -124,6 +133,22 @@ const User = () => {
     };
 
     const handleCreate = () => {
+        // Validation
+        if (!newUser.name || !newUser.email || !newUser.phoneNumber || !newUser.username || !newUser.password || !newUser.role) {
+            setMessage('Please fill in all fields.');
+            return;
+        }
+
+        if (!/^\S+@\S+\.\S+$/.test(newUser.email)) {
+            setMessage('Please enter a valid email address.');
+            return;
+        }
+
+        if (!/^\d{10}$/.test(newUser.phoneNumber)) {
+            setMessage('Phone number should be exactly 10 digits.');
+            return;
+        }
+
         axios.post(`http://localhost:5000/user-details`, newUser)
             .then(() => {
                 setMessage(`User #${newUser.name} has been created.`);
@@ -144,7 +169,7 @@ const User = () => {
                 <header className="header">
                     <h2>User Management</h2>
                     <div className="profile">
-                        <img src={profilePic} alt="Admin" className="profile-pic" /> {/* Use the imported image */}
+                        <img src={profilePic} alt="Admin" className="profile-pic" />
                         <span className="admin-name">Admin</span>
                         <button onClick={handleLogout} className="logout-button">Logout</button>
                     </div>
